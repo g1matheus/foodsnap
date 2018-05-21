@@ -17,7 +17,10 @@ android {
         }
     }
     sourceSets {
-        main { assets.srcDirs = ['src/main/assets', 'assets'] } 
+        main {
+            assets.srcDirs = ['src/main/assets', 'assets'] 
+            java.srcDirs =['src/main/java', 'src/main/java/env']
+} 
         debug {assets.srcDirs = ['src/debug/assets', 'assets'] }
     }
 }

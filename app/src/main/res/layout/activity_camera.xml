@@ -8,19 +8,21 @@
     android:baselineAligned="false"
     tools:context=".CameraActivity" >
 
+    <TextView
+        android:id="@+id/txtPreview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Preview"
+        android:textSize="15dp" />
+
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="500dp"
+        android:layout_width="match_parent"
+        android:layout_height="423dp"
+        android:layout_centerVertical="true"
         android:layout_weight="1"
         android:orientation="vertical"
         android:padding="10dp">
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Preview"
-            android:textSize="15dp" />
 
         <!-- To display picture taken -->
         <ImageView

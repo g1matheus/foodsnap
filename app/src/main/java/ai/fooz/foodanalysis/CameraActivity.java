@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 import java.io.File;
@@ -40,7 +41,8 @@ public class CameraActivity extends AppCompatActivity {
 
     private ImageView imgPreview;
     private VideoView videoPreview;
-    private Button btnCapturePicture, btnRecordVideo;
+    private Button btnCapturePicture;
+    private TextView txtPreview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class CameraActivity extends AppCompatActivity {
 
         imgPreview = (ImageView) findViewById(R.id.imgPreview);
         btnCapturePicture = (Button) findViewById(R.id.btnCapturePicture);
+        txtPreview = (TextView)findViewById(R.id.txtPreview);
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -151,11 +154,15 @@ public class CameraActivity extends AppCompatActivity {
                     options);
 
             imgPreview.setImageBitmap(bitmap);
+            classifyImage(bitmap);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
 
+    public void classifyImage(Bitmap bitmap){
+        txtPreview.setText("APPLE");
+    }
     /**
      * Creating file uri to store image/video
      */
