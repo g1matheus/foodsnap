@@ -8,39 +8,32 @@
     android:baselineAligned="false"
     tools:context=".CameraActivity" >
 
+    <!-- To display picture taken -->
+    <ImageView
+        android:id="@+id/imgPreview"
+        android:layout_width="match_parent"
+        android:layout_height="224dp"
+        android:scaleType="fitXY"/>
+
     <TextView
         android:id="@+id/txtPreview"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="232dp"
         android:padding="10dp"
-        android:text="Preview"
+        android:text="Result"
         android:textSize="15dp" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="423dp"
-        android:layout_centerVertical="true"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:padding="10dp">
-
-        <!-- To display picture taken -->
-        <ImageView
-            android:id="@+id/imgPreview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
-            android:visibility="gone" />
-
-    </RelativeLayout>
-
-    <!-- Capture picture button -->
     <Button
         android:id="@+id/btnCapturePicture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="Take a Picture" />
+        android:layout_width="50dp"
+        android:layout_height="49dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:background="@android:drawable/ic_menu_camera" />
+
+    <!-- Capture picture button -->
 
 </RelativeLayout>

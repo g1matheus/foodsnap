@@ -92,18 +92,7 @@ public class CameraActivity extends AppCompatActivity {
         });
 
         initTensorFlowAndLoadModel();
-
-        /**
-         * Record video button click event
-         */
-        /*btnRecordVideo.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // record video
-                recordVideo();
-            }
-        });*/
+        captureImage();
     }
 
     /**
