@@ -32,31 +32,31 @@ import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 /** A classifier specialized to label images using TensorFlow. */
 public class TensorFlowImageClassifier implements Classifier {
-  private static final String TAG = "TensorFlowImageClassifier";
+  public static final String TAG = "TensorFlowImageClassifier";
 
   // Only return this many results with at least this confidence.
-  private static final int MAX_RESULTS = 3;
-  private static final float THRESHOLD = 0.1f;
+  public static final int MAX_RESULTS = 3;
+  public static final float THRESHOLD = 0.1f;
 
   // Config values.
-  private String inputName;
-  private String outputName;
-  private int inputSize;
-  private int imageMean;
-  private float imageStd;
+  public String inputName;
+  public String outputName;
+  public int inputSize;
+  public int imageMean;
+  public float imageStd;
 
   // Pre-allocated buffers.
-  private Vector<String> labels = new Vector<String>();
-  private int[] intValues;
-  private float[] floatValues;
-  private float[] outputs;
-  private String[] outputNames;
+  public Vector<String> labels = new Vector<String>();
+  public int[] intValues;
+  public float[] floatValues;
+  public float[] outputs;
+  public String[] outputNames;
 
-  private boolean logStats = false;
+  public boolean logStats = false;
 
-  private TensorFlowInferenceInterface inferenceInterface;
+  public TensorFlowInferenceInterface inferenceInterface;
 
-  private TensorFlowImageClassifier() {}
+  public TensorFlowImageClassifier() {}
 
   /**
    * Initializes a native TensorFlow session for classifying images.

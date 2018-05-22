@@ -3,6 +3,7 @@ package ai.fooz.foodanalysis;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.graphics.Bitmap.Config;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,10 +22,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
+
+import org.tensorflow.Operation;
+import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class CameraActivity extends AppCompatActivity {
 
@@ -43,6 +51,19 @@ public class CameraActivity extends AppCompatActivity {
     private VideoView videoPreview;
     private Button btnCapturePicture;
     private TextView txtPreview;
+
+    private static final int INPUT_SIZE = 224;
+    private static final int IMAGE_MEAN = 128;
+    private static final float IMAGE_STD = 128.0f;
+    private static final String INPUT_NAME = "input";
+    private static final String OUTPUT_NAME = "final_result";
+
+    private static final String MODEL_FILE = "file:///android_asset/graph.pb";
+    private static final String LABEL_FILE = "file:///android_asset/labels.txt";
+
+    private Classifier classifier;
+
+    private Executor executor = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +90,8 @@ public class CameraActivity extends AppCompatActivity {
                 captureImage();
             }
         });
+
+        initTensorFlowAndLoadModel();
 
         /**
          * Record video button click event
@@ -162,7 +185,44 @@ public class CameraActivity extends AppCompatActivity {
 
     public void classifyImage(Bitmap bitmap){
         txtPreview.setText("APPLE");
+
+//        Bitmap bitmap = cameraKitImage.getBitmap();
+//
+//        bitmap = Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, false);
+//
+//        imageViewResult.setImageBitmap(bitmap);
+
+        //Bitmap croppedBitmap = Bitmap.createBitmap(INPUT_SIZE, INPUT_SIZE, Config.ARGB_8888);
+        Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, true);
+        final List<Classifier.Recognition> results = classifier.recognizeImage(croppedBitmap);
+
+        txtPreview.setText(results.toString());
     }
+
+    private void initTensorFlowAndLoadModel() {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    classifier =
+                            TensorFlowImageClassifier.create(
+                                    getAssets(),
+                                    MODEL_FILE,
+                                    LABEL_FILE,
+                                    INPUT_SIZE,
+                                    IMAGE_MEAN,
+                                    IMAGE_STD,
+                                    INPUT_NAME,
+                                    OUTPUT_NAME);
+//                    txtPreview.setText("Predicting...");
+                } catch (final Exception e) {
+                    throw new RuntimeException("Error initializing TensorFlow!", e);
+                }
+            }
+        });
+    }
+
+
     /**
      * Creating file uri to store image/video
      */
