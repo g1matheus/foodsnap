@@ -23,16 +23,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.tensorflow.Operation;
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import de.siegmar.fastcsv.reader.CsvParser;
+import de.siegmar.fastcsv.reader.CsvReader;
+import de.siegmar.fastcsv.reader.CsvRow;
 
 public class CameraActivity extends AppCompatActivity {
 
@@ -51,6 +63,7 @@ public class CameraActivity extends AppCompatActivity {
     private VideoView videoPreview;
     private Button btnCapturePicture;
     private TextView txtPreview;
+    private TextView nutriStats;
 
     private static final int INPUT_SIZE = 224;
     private static final int IMAGE_MEAN = 128;
@@ -60,6 +73,7 @@ public class CameraActivity extends AppCompatActivity {
 
     private static final String MODEL_FILE = "file:///android_asset/graph.pb";
     private static final String LABEL_FILE = "file:///android_asset/labels.txt";
+    private static final String NUTRI_STATS_FILE = "file:///android_asset/nutrition_stats.txt";
 
     private Classifier classifier;
 
@@ -73,6 +87,7 @@ public class CameraActivity extends AppCompatActivity {
         imgPreview = (ImageView) findViewById(R.id.imgPreview);
         btnCapturePicture = (Button) findViewById(R.id.btnCapturePicture);
         txtPreview = (TextView)findViewById(R.id.txtPreview);
+        nutriStats = (TextView)findViewById(R.id.nutriStats);
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -186,6 +201,35 @@ public class CameraActivity extends AppCompatActivity {
         final List<Classifier.Recognition> results = classifier.recognizeImage(croppedBitmap);
 
         txtPreview.setText(results.toString());
+        setNutrients(results);
+    }
+
+    public void setNutrients(List results) {
+        String actualFilename = NUTRI_STATS_FILE.split("file:///android_asset/")[1];
+//        Log.i(TAG, "Reading labels from: " + actualFilename);
+        BufferedReader br = null;
+        try {
+            JSONArray jsonArray;
+            br = new BufferedReader(new InputStreamReader(getAssets().open(actualFilename)));
+            String line;
+            while ((line = br.readLine()) != null) {
+                Log.d("Nutri Stats", line);
+                jsonArray = new JSONArray(line);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject explrObject = jsonArray.getJSONObject(i);
+                    if(results.get(0).toString().toLowerCase().contains(explrObject.getString("item").toLowerCase())){
+                        String values = "Calories: " + explrObject.getString("calories")+'\n'+"Carbs: "+explrObject.getString("carbs");
+                        nutriStats.setText(values);
+                        break;
+                    }
+                }
+            }
+            br.close();
+        } catch (IOException e) {
+            throw new RuntimeException("Problem reading label file!" , e);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initTensorFlowAndLoadModel() {
