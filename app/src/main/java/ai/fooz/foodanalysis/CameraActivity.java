@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.Config;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +24,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,19 +40,14 @@ import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
-import de.siegmar.fastcsv.reader.CsvParser;
-import de.siegmar.fastcsv.reader.CsvReader;
-import de.siegmar.fastcsv.reader.CsvRow;
 
 public class CameraActivity extends AppCompatActivity {
 
@@ -76,6 +79,7 @@ public class CameraActivity extends AppCompatActivity {
     private static final String NUTRI_STATS_FILE = "file:///android_asset/nutrition_stats.txt";
 
     private Classifier classifier;
+    private PieChart pieChart;
 
     private Executor executor = Executors.newSingleThreadExecutor();
 
@@ -88,6 +92,7 @@ public class CameraActivity extends AppCompatActivity {
         btnCapturePicture = (Button) findViewById(R.id.btnCapturePicture);
         txtPreview = (TextView)findViewById(R.id.txtPreview);
         nutriStats = (TextView)findViewById(R.id.nutriStats);
+        pieChart = (PieChart) findViewById(R.id.piechart);
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -226,11 +231,41 @@ public class CameraActivity extends AppCompatActivity {
                 }
             }
             br.close();
+
+            setPieChart();
         } catch (IOException e) {
             throw new RuntimeException("Problem reading label file!" , e);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setPieChart(){
+        pieChart.setUsePercentValues(true);
+        ArrayList<Entry> yvalues = new ArrayList<Entry>();
+        yvalues.add(new Entry(30f, 0));
+        yvalues.add(new Entry(15f, 1));
+        yvalues.add(new Entry(55f, 2));
+
+        PieDataSet dataSet = new PieDataSet(yvalues, "");
+        dataSet.setColors(ColorTemplate.VORDIPLOM_COLORS);
+
+        ArrayList<String> xVals = new ArrayList<String>();
+        xVals.add("Carbs");
+        xVals.add("Fat");
+        xVals.add("Protein");
+
+        PieData data = new PieData(xVals, dataSet);
+        data.setValueFormatter(new PercentFormatter());
+        data.setValueTextSize(13f);
+        data.setValueTextColor(Color.DKGRAY);
+
+        pieChart.animateXY(1400, 1400);
+        pieChart.setDescription("");
+        pieChart.setDrawHoleEnabled(true);
+        pieChart.setTransparentCircleRadius(30f);
+        pieChart.setHoleRadius(30f);
+        pieChart.setData(data);
     }
 
     private void initTensorFlowAndLoadModel() {

@@ -44,6 +44,10 @@
         android:layout_marginStart="13dp"
         android:text="NutriStats" />
 
-    <!-- Capture picture button -->
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/piechart"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_height="200dp" />
 
 </RelativeLayout>
