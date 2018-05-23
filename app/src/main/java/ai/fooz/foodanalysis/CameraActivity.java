@@ -217,8 +217,9 @@ public class CameraActivity extends AppCompatActivity {
                 jsonArray = new JSONArray(line);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject explrObject = jsonArray.getJSONObject(i);
+//                    Log.d("Results: ", results.get(0)["title"]);
                     if(results.get(0).toString().toLowerCase().contains(explrObject.getString("item").toLowerCase())){
-                        String values = "Calories: " + explrObject.getString("calories")+'\n'+"Carbs: "+explrObject.getString("carbs");
+                        String values = explrObject.getString("item")+"\n\nOn Serving: "+explrObject.getString("serving")+"\nCalories: " + explrObject.getString("calories")+"\nCarbs: "+explrObject.getString("carbs")+"\nProtein: "+explrObject.getString("protein")+"\nFats: "+explrObject.getString("fat");
                         nutriStats.setText(values);
                         break;
                     }
