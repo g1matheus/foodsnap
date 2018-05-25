@@ -16,7 +16,11 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -65,8 +69,7 @@ public class CameraActivity extends AppCompatActivity {
     private ImageView imgPreview;
     private VideoView videoPreview;
     private Button btnCapturePicture;
-    private TextView txtPreview;
-    private TextView nutriStats;
+//    private TextView nutriStats;
 
     private static final int INPUT_SIZE = 224;
     private static final int IMAGE_MEAN = 128;
@@ -83,6 +86,15 @@ public class CameraActivity extends AppCompatActivity {
 
     private Executor executor = Executors.newSingleThreadExecutor();
 
+//    Recycler view
+    RecyclerView recyclerView;
+    ArrayList<String> Number;
+    RecyclerView.LayoutManager RecyclerViewLayoutManager;
+    RecyclerViewAdapter RecyclerViewHorizontalAdapter;
+    LinearLayoutManager HorizontalLayout ;
+    View ChildView ;
+    int RecyclerViewItemPosition ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,8 +102,7 @@ public class CameraActivity extends AppCompatActivity {
 
         imgPreview = (ImageView) findViewById(R.id.imgPreview);
         btnCapturePicture = (Button) findViewById(R.id.btnCapturePicture);
-        txtPreview = (TextView)findViewById(R.id.txtPreview);
-        nutriStats = (TextView)findViewById(R.id.nutriStats);
+//        nutriStats = (TextView)findViewById(R.id.nutriStats);
         pieChart = (PieChart) findViewById(R.id.piechart);
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -193,19 +204,9 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     public void classifyImage(Bitmap bitmap){
-        txtPreview.setText("APPLE");
 
-//        Bitmap bitmap = cameraKitImage.getBitmap();
-//
-//        bitmap = Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, false);
-//
-//        imageViewResult.setImageBitmap(bitmap);
-
-        //Bitmap croppedBitmap = Bitmap.createBitmap(INPUT_SIZE, INPUT_SIZE, Config.ARGB_8888);
         Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, true);
         final List<Classifier.Recognition> results = classifier.recognizeImage(croppedBitmap);
-
-        txtPreview.setText(results.toString());
         setNutrients(results);
     }
 
@@ -225,7 +226,7 @@ public class CameraActivity extends AppCompatActivity {
 //                    Log.d("Results: ", results.get(0)["title"]);
                     if(results.get(0).toString().toLowerCase().contains(explrObject.getString("item").toLowerCase())){
                         String values = explrObject.getString("item")+"\n\nOn Serving: "+explrObject.getString("serving")+"\nCalories: " + explrObject.getString("calories")+"\nCarbs: "+explrObject.getString("carbs")+"\nProtein: "+explrObject.getString("protein")+"\nFats: "+explrObject.getString("fat");
-                        nutriStats.setText(values);
+//                        nutriStats.setText(values);
                         break;
                     }
                 }
@@ -233,6 +234,7 @@ public class CameraActivity extends AppCompatActivity {
             br.close();
 
             setPieChart();
+            setupRecyclerViewForPredictions(results);
         } catch (IOException e) {
             throw new RuntimeException("Problem reading label file!" , e);
         } catch (JSONException e) {
@@ -283,7 +285,6 @@ public class CameraActivity extends AppCompatActivity {
                                     IMAGE_STD,
                                     INPUT_NAME,
                                     OUTPUT_NAME);
-//                    txtPreview.setText("Predicting...");
                 } catch (final Exception e) {
                     throw new RuntimeException("Error initializing TensorFlow!", e);
                 }
@@ -351,4 +352,76 @@ public class CameraActivity extends AppCompatActivity {
             }
         }
     }
+
+//    ======================================================
+
+    public void setupRecyclerViewForPredictions(List results) {
+        recyclerView = (RecyclerView)findViewById(R.id.recyclerview1);
+
+        RecyclerViewLayoutManager = new LinearLayoutManager(getApplicationContext());
+
+        recyclerView.setLayoutManager(RecyclerViewLayoutManager);
+
+        // Adding items to RecyclerView.
+        AddItemsToRecyclerViewArrayList(results);
+
+        RecyclerViewHorizontalAdapter = new RecyclerViewAdapter(Number);
+
+        HorizontalLayout = new LinearLayoutManager(CameraActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(HorizontalLayout);
+
+        recyclerView.setAdapter(RecyclerViewHorizontalAdapter);
+
+
+        // Adding on item click listener to RecyclerView.
+        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+
+            GestureDetector gestureDetector = new GestureDetector(CameraActivity.this, new GestureDetector.SimpleOnGestureListener() {
+
+                @Override public boolean onSingleTapUp(MotionEvent motionEvent) {
+
+                    return true;
+                }
+
+            });
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView Recyclerview, MotionEvent motionEvent) {
+
+                ChildView = Recyclerview.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
+
+                if(ChildView != null && gestureDetector.onTouchEvent(motionEvent)) {
+
+                    //Getting clicked value.
+                    RecyclerViewItemPosition = Recyclerview.getChildAdapterPosition(ChildView);
+
+                    // Showing clicked item value on screen using toast message.
+                    Toast.makeText(CameraActivity.this, Number.get(RecyclerViewItemPosition), Toast.LENGTH_LONG).show();
+
+                }
+
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView Recyclerview, MotionEvent motionEvent) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        });
+    }
+
+    // function to add items in RecyclerView.
+    public void AddItemsToRecyclerViewArrayList(List results){
+
+        Number = new ArrayList<>();
+
+        for (Object string : results) {
+            Number.add(string.toString());
+        }
+    }
+
 }

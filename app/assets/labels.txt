@@ -1,3 +1,59 @@
-dosa
+almond
+apple
+banana
+beetroot
+bell pepper
+bhelpuri
+biryani
+bitter gourd
+bottle gourd
+bread
+brinjal
+broad beans
+burger
+cabbage
+capsicum
+carrot
+cauliflower
+chaat
+chana masala
+chicken
+chole bhature
+cluster beans
+coffee
+coriander leaves
+corn maize
+cucumber
+daal baati
+daliya
+dates
+egg
+gulab jamun
+idli
+kachori
+milk
+naan
+paapad
+pakoda
+paneer
+paneer tikka
+pizza
+puri
+radish
+rasam
+rasgulla
+rice
+ridge gourd
 roti
+rusk
+sambar
+samosa
+set dosa
+sweet potato
+tamarind
+tapioca
 tea
+vada
+vada pav
+walnuts
+cashew

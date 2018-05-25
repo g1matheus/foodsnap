@@ -15,16 +15,14 @@
         android:layout_height="224dp"
         android:scaleType="fitXY"/>
 
-    <TextView
-        android:id="@+id/txtPreview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview1"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="232dp"
-        android:padding="10dp"
-        android:text="Result"
-        android:textSize="15dp" />
+        android:layout_alignStart="@+id/nutriStats"
+        android:layout_marginTop="234dp"
+        android:scrollbars="horizontal" />
 
     <Button
         android:id="@+id/btnCapturePicture"
@@ -34,20 +32,22 @@
         android:layout_alignParentTop="true"
         android:background="@android:drawable/ic_menu_camera" />
 
-    <TextView
-        android:id="@+id/nutriStats"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="233dp"
-        android:layout_marginStart="13dp"
-        android:text="NutriStats" />
+    <!--<TextView-->
+        <!--android:id="@+id/nutriStats"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_marginBottom="233dp"-->
+        <!--android:layout_marginStart="13dp"-->
+        <!--android:text="NutriStats" />-->
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/piechart"
         android:layout_width="match_parent"
+        android:layout_height="200dp"
         android:layout_alignParentBottom="true"
-        android:layout_height="200dp" />
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="75dp" />
 
 </RelativeLayout>
