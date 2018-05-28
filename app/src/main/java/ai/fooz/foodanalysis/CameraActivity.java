@@ -94,6 +94,7 @@ public class CameraActivity extends AppCompatActivity {
     LinearLayoutManager HorizontalLayout ;
     View ChildView ;
     int RecyclerViewItemPosition ;
+    List<Classifier.Recognition> predResults;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,8 +207,9 @@ public class CameraActivity extends AppCompatActivity {
     public void classifyImage(Bitmap bitmap){
 
         Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, true);
-        final List<Classifier.Recognition> results = classifier.recognizeImage(croppedBitmap);
-        setNutrients(results);
+        predResults = classifier.recognizeImage(croppedBitmap);
+
+        setNutrients(predResults);
     }
 
     public void setNutrients(List results) {
@@ -419,8 +421,9 @@ public class CameraActivity extends AppCompatActivity {
 
         Number = new ArrayList<>();
 
-        for (Object string : results) {
-            Number.add(string.toString());
+        for (int i=0; i<predResults.size(); i++) {
+            Classifier.Recognition val = predResults.get(i);
+            Number.add(val.getTitle());
         }
     }
 
