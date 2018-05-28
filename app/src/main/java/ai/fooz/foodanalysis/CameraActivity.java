@@ -3,7 +3,6 @@ package ai.fooz.foodanalysis;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
-import android.graphics.Bitmap.Config;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -24,7 +23,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -38,8 +36,6 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.tensorflow.Operation;
-import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -53,6 +49,11 @@ import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import ai.fooz.foodanalysis.env.Classifier;
+import ai.fooz.foodanalysis.env.TensorFlowImageClassifier;
+import ai.fooz.models.Prediction;
+import ai.fooz.models.RefImage;
+
 public class CameraActivity extends AppCompatActivity {
 
     // Activity request codes
@@ -64,7 +65,7 @@ public class CameraActivity extends AppCompatActivity {
     // directory name to store captured images and videos
     private static final String IMAGE_DIRECTORY_NAME = "FoodAnalysisImages";
 
-    private Uri fileUri; // file url to store image/video
+    public Uri fileUri; // file url to store image/video
 
     private ImageView imgPreview;
     private VideoView videoPreview;
@@ -208,7 +209,6 @@ public class CameraActivity extends AppCompatActivity {
 
         Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, true);
         predResults = classifier.recognizeImage(croppedBitmap);
-
         setNutrients(predResults);
     }
 
@@ -421,14 +421,27 @@ public class CameraActivity extends AppCompatActivity {
 
         Number = new ArrayList<>();
 
+        RefImage refImage = new RefImage();
+        refImage.name = fileUri.toString();
+        refImage.save();
+
         for (int i=0; i<predResults.size(); i++) {
             Classifier.Recognition val = predResults.get(i);
+
+            Prediction pred = new Prediction();
+            pred.title = val.getTitle();
+            pred.confidence = val.getConfidence().toString();
+            pred.refImage = refImage;
+            pred.save();
+
             Number.add(val.getTitle());
         }
     }
 
     public void labelsList(View view) {
 
+        finish();
+        /*
         String actualFilename = LABEL_FILE.split("file:///android_asset/")[1];
         String lbls = "Labels\n";
         BufferedReader br = null;
@@ -445,5 +458,6 @@ public class CameraActivity extends AppCompatActivity {
         } catch (IOException e) {
             throw new RuntimeException("Problem reading label file!" , e);
         }
+        */
     }
 }
