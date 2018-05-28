@@ -431,7 +431,7 @@ public class CameraActivity extends AppCompatActivity {
             Prediction pred = new Prediction();
             pred.title = val.getTitle();
             pred.confidence = val.getConfidence().toString();
-            pred.refImage = refImage;
+            pred.refimage = refImage;
             pred.save();
 
             Number.add(val.getTitle());

@@ -18,6 +18,6 @@ public class RefImage extends SugarRecord {
     }
 
     public List<Prediction> getPredictions(){
-        return Prediction.find(Prediction.class, "image = ?", String.valueOf(this.getId()));
+        return Prediction.find(Prediction.class, "refimage = ?", getId().toString());
     }
 }
