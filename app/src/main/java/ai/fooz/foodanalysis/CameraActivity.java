@@ -424,4 +424,23 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
+    public void labelsList(View view) {
+
+        String actualFilename = LABEL_FILE.split("file:///android_asset/")[1];
+        String lbls = "Labels\n";
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new InputStreamReader(getAssets().open(actualFilename)));
+            String line;
+            while ((line = br.readLine()) != null) {
+                lbls = lbls+"\n"+line;
+            }
+            br.close();
+            Toast.makeText(getApplicationContext(),
+                    lbls, Toast.LENGTH_LONG)
+                    .show();
+        } catch (IOException e) {
+            throw new RuntimeException("Problem reading label file!" , e);
+        }
+    }
 }

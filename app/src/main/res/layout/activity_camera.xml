@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -13,7 +14,9 @@
         android:id="@+id/imgPreview"
         android:layout_width="match_parent"
         android:layout_height="224dp"
-        android:scaleType="fitXY"/>
+        android:background="#000"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/camera" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview1"
@@ -50,4 +53,164 @@
         android:layout_alignParentStart="true"
         android:layout_marginBottom="75dp" />
 
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        tools:context=".CameraActivity"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/customborder">
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/calRelLayout"
+            android:layout_width="@dimen/cal_tab_width"
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            android:background="@color/cardview_light_background">
+
+            <TextView
+                android:id="@+id/txtCalValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="11dp"
+                android:text="120"
+                android:textColor="@color/cardview_dark_background" />
+
+            <TextView
+                android:id="@+id/txtCal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:text="CAL" />
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="64dp"
+                app:srcCompat="@drawable/icon_seperator" />
+
+        </RelativeLayout>
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/carbsRelLayout"
+            android:layout_width="@dimen/cal_tab_width"
+            android:layout_toRightOf="@+id/calRelLayout"
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            android:background="@color/cardview_light_background">
+
+            <TextView
+                android:id="@+id/txtCarbsValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="11dp"
+                android:text="100"
+                android:textColor="@color/cardview_dark_background" />
+
+            <TextView
+                android:id="@+id/txtCarbs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:text="CARBS" />
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="64dp"
+                app:srcCompat="@drawable/icon_seperator" />
+
+        </RelativeLayout>
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/fatRelLayout"
+            android:layout_width="@dimen/cal_tab_width"
+            android:layout_toRightOf="@+id/carbsRelLayout"
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            android:background="@color/cardview_light_background">
+
+            <TextView
+                android:id="@+id/txtFatValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:gravity="center"
+                android:text="100"
+                android:textColor="@color/cardview_dark_background" />
+
+            <TextView
+                android:id="@+id/txtFat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:text="FATS" />
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="64dp"
+                app:srcCompat="@drawable/icon_seperator" />
+
+        </RelativeLayout>
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/protRelLayout"
+            android:layout_width="@dimen/cal_tab_width"
+            android:layout_toRightOf="@+id/fatRelLayout"
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            android:background="@color/cardview_light_background">
+
+            <TextView
+                android:id="@+id/txtProtValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="11dp"
+                android:text="100"
+                android:textColor="@color/cardview_dark_background" />
+
+            <TextView
+                android:id="@+id/txtProt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:text="PROTEIN" />
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="64dp"
+                app:srcCompat="@drawable/icon_seperator" />
+
+        </RelativeLayout>
+
+
+
+
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="#000"
+        android:text="      "
+        android:onClick="labelsList"/>
 </RelativeLayout>
