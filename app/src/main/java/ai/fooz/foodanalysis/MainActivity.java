@@ -1,6 +1,7 @@
 package ai.fooz.foodanalysis;
 
 import android.content.Intent;
+import java.util.Calendar;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,8 @@ import java.util.List;
 
 import ai.fooz.models.Prediction;
 import ai.fooz.models.RefImage;
+import devs.mulham.horizontalcalendar.HorizontalCalendar;
+import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,6 +38,30 @@ public class MainActivity extends AppCompatActivity {
 //                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
 //                startActivity(intent);
                 callCameraActivity();
+            }
+        });
+
+        setupCalendarView();
+    }
+
+    public void setupCalendarView() {
+        /* starts before 1 month from now */
+        Calendar startDate = Calendar.getInstance();
+        startDate.add(Calendar.MONTH, -1);
+
+        /* ends after 1 month from now */
+        Calendar endDate = Calendar.getInstance();
+        endDate.add(Calendar.MONTH, 1);
+
+        HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(this, R.id.calendarView)
+                .range(startDate, endDate)
+                .datesNumberOnScreen(5)
+                .build();
+
+        horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
+            @Override
+            public void onDateSelected(Calendar date, int position) {
+                Toast.makeText(MainActivity.this, "You Clicked at " +date, Toast.LENGTH_SHORT).show();
             }
         });
     }
