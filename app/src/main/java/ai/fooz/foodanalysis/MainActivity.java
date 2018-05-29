@@ -2,6 +2,7 @@ package ai.fooz.foodanalysis;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -23,7 +24,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        callCameraActivity();
+
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Click action
+//                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+//                startActivity(intent);
+                callCameraActivity();
+            }
+        });
     }
 
     @Override
