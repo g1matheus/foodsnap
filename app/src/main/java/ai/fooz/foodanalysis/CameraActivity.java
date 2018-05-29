@@ -66,6 +66,7 @@ public class CameraActivity extends AppCompatActivity {
     private static final String IMAGE_DIRECTORY_NAME = "FoodAnalysisImages";
 
     public Uri fileUri; // file url to store image/video
+    public RefImage existingImg;
 
     private ImageView imgPreview;
     private VideoView videoPreview;
@@ -125,7 +126,31 @@ public class CameraActivity extends AppCompatActivity {
         });
 
         initTensorFlowAndLoadModel();
-        captureImage();
+
+        Long eId = getIntent().getLongExtra("REF_DATA_ID", -99);
+        existingImg = RefImage.findById(RefImage.class, eId);
+
+        if (existingImg != null)
+            setupExistingData(existingImg);
+        else {
+            captureImage();
+        }
+    }
+
+    public void setupExistingData(RefImage eimg) {
+        try {
+            imgPreview.setVisibility(View.VISIBLE);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+//            options.inSampleSize = 8;
+            final Bitmap bitmap = BitmapFactory.decodeFile(Uri.parse(existingImg.name).getPath(),
+                    options);
+            imgPreview.setImageBitmap(bitmap);
+
+            setupRecyclerViewForPredictions(eimg.getPredictions());
+            setPieChart();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -417,24 +442,32 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     // function to add items in RecyclerView.
-    public void AddItemsToRecyclerViewArrayList(List results){
+    public void AddItemsToRecyclerViewArrayList(List<Prediction> results){
 
         Number = new ArrayList<>();
 
-        RefImage refImage = new RefImage();
-        refImage.name = fileUri.toString();
-        refImage.save();
+        if (existingImg != null) {
+            for (int i=0; i<results.size(); i++) {
+                Prediction val = results.get(i);
+                Number.add(val.title);
+            }
 
-        for (int i=0; i<predResults.size(); i++) {
-            Classifier.Recognition val = predResults.get(i);
+        } else if(predResults.size() > 0) {
+            RefImage refImage = new RefImage();
+            refImage.name = fileUri.toString();
+            refImage.save();
 
-            Prediction pred = new Prediction();
-            pred.title = val.getTitle();
-            pred.confidence = val.getConfidence().toString();
-            pred.refimage = refImage;
-            pred.save();
+            for (int i=0; i<predResults.size(); i++) {
+                Classifier.Recognition val = predResults.get(i);
 
-            Number.add(val.getTitle());
+                Prediction pred = new Prediction();
+                pred.title = val.getTitle();
+                pred.confidence = val.getConfidence().toString();
+                pred.refimage = refImage;
+                pred.save();
+
+                Number.add(val.getTitle());
+            }
         }
     }
 

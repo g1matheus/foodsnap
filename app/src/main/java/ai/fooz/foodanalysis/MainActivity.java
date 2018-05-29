@@ -19,6 +19,7 @@ import ai.fooz.models.RefImage;
 public class MainActivity extends AppCompatActivity {
 
     ListView list;
+    ArrayList<Long> refImgIds = new ArrayList<Long>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void setupListView() {
 
+        refImgIds.clear();
+
         List<RefImage> refImagesList = RefImage.listAll(RefImage.class);
 
         final ArrayList<String> titles = new ArrayList<String>();
@@ -53,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (int i=0; i<refImagesList.size(); i++) {
             RefImage img = refImagesList.get(i);
+            refImgIds.add(img.getId());
             List<Prediction> preds = img.getPredictions();
             Prediction pd = preds.get(0);
             titles.add(pd.title);
@@ -70,8 +74,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Toast.makeText(MainActivity.this, "You Clicked at " +titles.get(position), Toast.LENGTH_SHORT).show();
-
+                //Toast.makeText(MainActivity.this, "You Clicked at " +titles.get(position), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getBaseContext(), CameraActivity.class);
+                intent.putExtra("REF_DATA_ID", refImgIds.get(position));
+                startActivity(intent);
             }
         });
 
