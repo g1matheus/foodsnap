@@ -113,18 +113,6 @@ public class CameraActivity extends AppCompatActivity {
 
         requestRuntimePermission();
 
-        /**
-         * Capture image button click event
-         * */
-        btnCapturePicture.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // capture picture
-                captureImage();
-            }
-        });
-
         initTensorFlowAndLoadModel();
 
         Long eId = getIntent().getLongExtra("REF_DATA_ID", -99);
@@ -473,8 +461,6 @@ public class CameraActivity extends AppCompatActivity {
 
     public void labelsList(View view) {
 
-        finish();
-        /*
         String actualFilename = LABEL_FILE.split("file:///android_asset/")[1];
         String lbls = "Labels\n";
         BufferedReader br = null;
@@ -491,6 +477,8 @@ public class CameraActivity extends AppCompatActivity {
         } catch (IOException e) {
             throw new RuntimeException("Problem reading label file!" , e);
         }
-        */
+    }
+    public void backPressed(View view) {
+        finish();
     }
 }

@@ -1,6 +1,11 @@
 package ai.fooz.foodanalysis;
 
+import android.app.Activity;
 import android.content.Intent;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Calendar;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
@@ -19,9 +24,10 @@ import ai.fooz.models.RefImage;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     ListView list;
+    private static final String LABEL_FILE = "file:///android_asset/labels.txt";
     ArrayList<Long> refImgIds = new ArrayList<Long>();
 
     @Override
@@ -61,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Calendar date, int position) {
-                Toast.makeText(MainActivity.this, "You Clicked at " +date, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "You Clicked at " +date, Toast.LENGTH_SHORT).show();
             }
         });
     }

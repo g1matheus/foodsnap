@@ -29,11 +29,12 @@
 
     <Button
         android:id="@+id/btnCapturePicture"
-        android:layout_width="50dp"
+        android:layout_width="54dp"
         android:layout_height="49dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:background="@android:drawable/ic_menu_camera" />
+        android:text="List"
+        android:onClick="labelsList"/>
 
     <!--<TextView-->
         <!--android:id="@+id/nutriStats"-->
@@ -213,5 +214,5 @@
         android:background="@android:color/transparent"
         android:text="Back"
         android:textColor="#fff"
-        android:onClick="labelsList"/>
+        android:onClick="backPressed"/>
 </RelativeLayout>
