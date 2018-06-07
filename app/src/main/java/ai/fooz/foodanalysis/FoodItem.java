@@ -3,13 +3,23 @@ package ai.fooz.foodanalysis;
 public class FoodItem {
 
     private String name, image;
+    private Long id;
 
     public FoodItem() {
     }
 
-    public FoodItem(String name, String image) {
+    public FoodItem(Long id, String name, String image) {
         this.name = name;
         this.image = image;
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

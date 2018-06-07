@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import ai.fooz.foodanalysis.env.MyUtility;
+import ai.fooz.foodanalysis.env.RecyclerTouchListener;
 import ai.fooz.models.Prediction;
 import ai.fooz.models.RefImage;
 
@@ -88,6 +89,7 @@ public class MainActivity extends Activity {
         });
 
         setupCalendar();
+        setupRecyclerView();
     }
 
 
@@ -115,13 +117,39 @@ public class MainActivity extends Activity {
         selectedDate = MyUtility.getDateWithFormat(cal.getTime(), "yyyy-MM-dd");
     }
 
+    public void setupRecyclerView() {
+
+        recyclerView = (RecyclerView) findViewById(R.id.list);
+        mAdapter = new FoodList(foodList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(mAdapter);
+
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                FoodItem fi = foodList.get(position);
+                Toast.makeText(getApplicationContext(), fi.getName() + " is selected!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getBaseContext(), CameraActivity.class);
+                intent.putExtra("REF_DATA_ID", fi.getId());
+                startActivity(intent);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+    }
+
     public void setupListView() {
 
         refImgIds.clear();
         foodList.clear();
 
 //        List<RefImage> refImagesList = RefImage.find(RefImage.class, "timestamp = ?", selectedDate);
-        RefImage.executeQuery("VACUUM");
+//        RefImage.executeQuery("VACUUM");
 //        List<RefImage> refImagesList = RefImage.findWithQuery(RefImage.class, "SELECT * FROM RefImage where timestamp = ? ORDER BY id DESC", selectedDate);
 //        List<RefImage> refImagesList = Select.from(RefImage.class).where(Condition.prop("timestamp").eq(selectedDate),.orderBy("id").list();
 
@@ -136,17 +164,12 @@ public class MainActivity extends Activity {
             List<Prediction> preds = img.getPredictions();
             Prediction pd = preds.get(0);
             FoodItem fi = new FoodItem();
+            fi.setId(img.getId());
             fi.setName(MyUtility.toTitleCase(pd.title));
             fi.setImage(img.name);
             foodList.add(fi);
         }
 
-        recyclerView = (RecyclerView) findViewById(R.id.list);
-        mAdapter = new FoodList(foodList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
     }
 
