@@ -1,5 +1,6 @@
 package ai.fooz.foodanalysis;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
@@ -11,12 +12,19 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
+import android.content.pm.PackageManager;
+import android.graphics.Movie;
 import android.net.Uri;
 import android.os.Build;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,11 +36,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.orm.query.Condition;
+import com.orm.query.Select;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import ai.fooz.foodanalysis.env.MyUtility;
 import ai.fooz.models.Prediction;
 import ai.fooz.models.RefImage;
 
@@ -41,7 +53,10 @@ public class MainActivity extends Activity {
     TextView activity_main_text_day_of_month;
     TextView activity_main_text_day_of_week;
 
-    RecyclerView list;
+    private List<FoodItem> foodList = new ArrayList<FoodItem>();
+    private RecyclerView recyclerView;
+    private FoodList mAdapter;
+
     private static final String LABEL_FILE = "file:///android_asset/labels.txt";
     ArrayList<Long> refImgIds = new ArrayList<Long>();
 
@@ -51,11 +66,14 @@ public class MainActivity extends Activity {
     private  int mYear; 
     private  int mMonth;
     private  int mDay;
+    private String selectedDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        requestRuntimePermission();
 
         activity_main_text_day_of_month = (TextView)findViewById(R.id.activity_main_text_day_of_month);
         activity_main_text_day_of_week = (TextView)findViewById(R.id.activity_main_text_day_of_week);
@@ -65,13 +83,11 @@ public class MainActivity extends Activity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Click action
-//                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
-//                startActivity(intent);
                 callCameraActivity();
             }
         });
 
+        setupCalendar();
     }
 
 
@@ -79,11 +95,12 @@ public class MainActivity extends Activity {
     public void onResume(){
         super.onResume();
         setupListView();
+    }
 
+    public void setupCalendar() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy EEEE");
-      //  tv_date_set.setText(format.format(cal.getTime()));
-
+        //  tv_date_set.setText(format.format(cal.getTime()));
 
         String todayDate = format.format(cal.getTime());
         StringTokenizer tokenizer = new StringTokenizer(todayDate," ");
@@ -94,51 +111,48 @@ public class MainActivity extends Activity {
 
         activity_main_text_day_of_month.setText(dateee+" "+month);
         activity_main_text_day_of_week.setText(dayy+"");
+
+        selectedDate = MyUtility.getDateWithFormat(cal.getTime(), "yyyy-MM-dd");
     }
 
     public void setupListView() {
 
         refImgIds.clear();
+        foodList.clear();
 
-        List<RefImage> refImagesList = RefImage.listAll(RefImage.class);
+//        List<RefImage> refImagesList = RefImage.find(RefImage.class, "timestamp = ?", selectedDate);
+        RefImage.executeQuery("VACUUM");
+//        List<RefImage> refImagesList = RefImage.findWithQuery(RefImage.class, "SELECT * FROM RefImage where timestamp = ? ORDER BY id DESC", selectedDate);
+//        List<RefImage> refImagesList = Select.from(RefImage.class).where(Condition.prop("timestamp").eq(selectedDate),.orderBy("id").list();
 
-        final ArrayList<String> titles = new ArrayList<String>();
-        final ArrayList<String> images = new ArrayList<String>();
+        List<RefImage> refImagesList = Select.from(RefImage.class)
+                .where(Condition.prop("timestamp").eq(selectedDate))
+                .orderBy("id DESC")
+                .list();
 
         for (int i=0; i<refImagesList.size(); i++) {
             RefImage img = refImagesList.get(i);
             refImgIds.add(img.getId());
             List<Prediction> preds = img.getPredictions();
             Prediction pd = preds.get(0);
-            titles.add(pd.title);
-            images.add(img.name);
+            FoodItem fi = new FoodItem();
+            fi.setName(MyUtility.toTitleCase(pd.title));
+            fi.setImage(img.name);
+            foodList.add(fi);
         }
 
-
-
-
-
-      //  FoodList adapter = new FoodList(MainActivity.this, titles, images);
-        list=(RecyclerView) findViewById(R.id.list);
-        list.setLayoutManager(new GridLayoutManager(this, 1, LinearLayoutManager.VERTICAL, false));
-        list.setAdapter(new FoodList(this,titles ,images));
-       /* list.setAdapter(adapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                //Toast.makeText(MainActivity.this, "You Clicked at " +titles.get(position), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getBaseContext(), CameraActivity.class);
-                intent.putExtra("REF_DATA_ID", refImgIds.get(position));
-                startActivity(intent);
-            }
-        });
-*/
+        recyclerView = (RecyclerView) findViewById(R.id.list);
+        mAdapter = new FoodList(foodList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
     }
 
     public void callCameraActivity() {
         Intent i = new Intent(this, CameraActivity.class);
+        i.putExtra("selectedDate", selectedDate);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
 //        finish();
@@ -161,6 +175,7 @@ public class MainActivity extends Activity {
             c1.setTime(date);
             c1.add(Calendar.DATE, 1);
             String todayDate = sdf.format(c1.getTime());
+            selectedDate = MyUtility.getDateWithFormat(c1.getTime(), "yyyy-MM-dd");
             StringTokenizer tokenizer = new StringTokenizer(todayDate," ");
             String dateee = tokenizer.nextToken();
             String month = tokenizer.nextToken();
@@ -170,9 +185,7 @@ public class MainActivity extends Activity {
             activity_main_text_day_of_month.setText(dateee+" "+month);
             activity_main_text_day_of_week.setText(dayy+"");
 
-
-
-
+            setupListView();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -199,6 +212,7 @@ public class MainActivity extends Activity {
             c1.setTime(date);
             c1.add(Calendar.DATE, -1);
             String todayDate = sdf.format(c1.getTime());
+            selectedDate = MyUtility.getDateWithFormat(c1.getTime(), "yyyy-MM-dd");
             StringTokenizer tokenizer = new StringTokenizer(todayDate," ");
             String dateee = tokenizer.nextToken();
             String month = tokenizer.nextToken();
@@ -208,9 +222,7 @@ public class MainActivity extends Activity {
             activity_main_text_day_of_month.setText(dateee+" "+month);
             activity_main_text_day_of_week.setText(dayy+"");
 
-
-
-
+            setupListView();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -268,7 +280,7 @@ public class MainActivity extends Activity {
             br = new BufferedReader(new InputStreamReader(getAssets().open(actualFilename)));
             String line;
             while ((line = br.readLine()) != null) {
-                lbls = lbls+"\n"+toTitleCase(line);
+                lbls = lbls+"\n"+ MyUtility.toTitleCase(line);
             }
             br.close();
 
@@ -288,31 +300,19 @@ public class MainActivity extends Activity {
         }
     }
 
-    public static String toTitleCase(String str) {
+    private void requestRuntimePermission() {
+        if (Build.VERSION.SDK_INT >= 23) {
 
-        if (str == null) {
-            return null;
-        }
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                    == PackageManager.PERMISSION_DENIED) {
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, 1);
+            }
 
-        boolean space = true;
-        StringBuilder builder = new StringBuilder(str);
-        final int len = builder.length();
-
-        for (int i = 0; i < len; ++i) {
-            char c = builder.charAt(i);
-            if (space) {
-                if (!Character.isWhitespace(c)) {
-                    // Convert to title case and switch out of whitespace mode.
-                    builder.setCharAt(i, Character.toTitleCase(c));
-                    space = false;
-                }
-            } else if (Character.isWhitespace(c)) {
-                space = true;
-            } else {
-                builder.setCharAt(i, Character.toLowerCase(c));
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
             }
         }
-
-        return builder.toString();
     }
 }

@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -50,6 +51,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import ai.fooz.foodanalysis.env.Classifier;
+import ai.fooz.foodanalysis.env.MyUtility;
 import ai.fooz.foodanalysis.env.TensorFlowImageClassifier;
 import ai.fooz.models.Prediction;
 import ai.fooz.models.RefImage;
@@ -107,7 +109,6 @@ public class CameraActivity extends AppCompatActivity {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
 
-        requestRuntimePermission();
 
         initTensorFlowAndLoadModel();
 
@@ -348,21 +349,7 @@ public class CameraActivity extends AppCompatActivity {
         return mediaFile;
     }
 
-    private void requestRuntimePermission() {
-        if (Build.VERSION.SDK_INT >= 23) {
 
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                    == PackageManager.PERMISSION_DENIED) {
-                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, 1);
-            }
-
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-            }
-        }
-    }
 
 //    ======================================================
 
@@ -439,6 +426,11 @@ public class CameraActivity extends AppCompatActivity {
         } else if(predResults.size() > 0) {
             RefImage refImage = new RefImage();
             refImage.name = fileUri.toString();
+            String sd = getIntent().getStringExtra("selectedDate");
+            if(sd != null)
+                refImage.timestamp = sd;
+            else
+                refImage.timestamp = MyUtility.getDateWithFormat(Calendar.getInstance().getTime(), "yyyy-MM-dd");
             refImage.save();
 
             for (int i=0; i<predResults.size(); i++) {
@@ -455,25 +447,6 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
-    public void labelsList(View view) {
-
-        String actualFilename = LABEL_FILE.split("file:///android_asset/")[1];
-        String lbls = "Labels\n";
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(getAssets().open(actualFilename)));
-            String line;
-            while ((line = br.readLine()) != null) {
-                lbls = lbls+"\n"+line;
-            }
-            br.close();
-            Toast.makeText(getApplicationContext(),
-                    lbls, Toast.LENGTH_LONG)
-                    .show();
-        } catch (IOException e) {
-            throw new RuntimeException("Problem reading label file!" , e);
-        }
-    }
     public void backPressed(View view) {
         finish();
     }

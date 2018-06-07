@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <meta-data android:name="DATABASE" android:value="food_categories.db" />
-    <meta-data android:name="VERSION" android:value="7" />
+    <meta-data android:name="VERSION" android:value="9" />
     <meta-data android:name="QUERY_LOG" android:value="true" />
     <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="ai.fooz.models" />
 
@@ -21,7 +21,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon"
-        android:name="com.orm.SugarApp">
+        android:name="com.orm.SugarApp"
+        android:hardwareAccelerated="false"
+        android:largeHeap="true">
 
         <activity android:name=".MainActivity">
             <intent-filter>

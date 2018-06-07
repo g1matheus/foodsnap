@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Movie;
+import android.media.Image;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,47 +18,46 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FoodList extends RecyclerView.Adapter<FoodList.ViewHolder> {
+public class FoodList extends RecyclerView.Adapter<FoodList.MyViewHolder> {
 
-    private FoodList context;
-    ArrayList<String> titles = new ArrayList<String>();
-    ArrayList<String> images = new ArrayList<String>();
+    private List<FoodItem> foodList;
 
-    public FoodList(MainActivity mainActivity, ArrayList<String> titles, ArrayList<String> images) {
-        this.context =  context;
-        this.titles =  titles;
-        this.images =  images;
+    public FoodList(List<FoodItem> foodList) {
+        this.foodList = foodList;
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        public TextView name;
+        public ImageView image;
+
+        public MyViewHolder(View view) {
+            super(view);
+            name = (TextView) view.findViewById(R.id.txt);
+            image = (ImageView) view.findViewById(R.id.img);
+        }
     }
 
     @Override
-    public FoodList.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.list_single, parent, false);
 
-        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_single, null);
-        FoodList.ViewHolder rcv = new FoodList.ViewHolder(layoutView);
-        return rcv;
+        return new MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(FoodList.ViewHolder holder, final int i) {
+    public void onBindViewHolder(MyViewHolder holder, int position) {
+        FoodItem foodItem = foodList.get(position);
+        holder.name.setText(foodItem.getName());
 
-
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        final Bitmap bitmap = BitmapFactory.decodeFile(Uri.parse(foodItem.getImage()).getPath(),
+                options);
+        holder.image.setImageBitmap(bitmap);
     }
 
     @Override
     public int getItemCount() {
-      //  return images.size();
-        return 20;
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        ImageView ivService;
-        TextView tvService;
-        ImageView ivRightback;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-
-        }
+        return foodList.size();
     }
 }

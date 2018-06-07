@@ -4,10 +4,12 @@ import android.media.Image;
 
 import com.orm.SugarRecord;
 
+import java.util.Date;
 import java.util.List;
 
 public class RefImage extends SugarRecord {
     public String name;
+    public String timestamp;
 
     public RefImage() {
 
