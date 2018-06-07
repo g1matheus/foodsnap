@@ -1,9 +1,11 @@
 package ai.fooz.foodanalysis;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,36 +14,49 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class FoodList extends ArrayAdapter<String> {
+public class FoodList extends RecyclerView.Adapter<FoodList.ViewHolder> {
 
-    private final Activity context;
-    private final ArrayList<String> title;
-    private final ArrayList<String> imageUri;
-    public FoodList(Activity context,
-                    ArrayList title, ArrayList imageUri) {
-        super(context, R.layout.list_single, title);
-        this.context = context;
-        this.title = title;
-        this.imageUri = imageUri;
+    private FoodList context;
+    ArrayList<String> titles = new ArrayList<String>();
+    ArrayList<String> images = new ArrayList<String>();
+
+    public FoodList(MainActivity mainActivity, ArrayList<String> titles, ArrayList<String> images) {
+        this.context =  context;
+        this.titles =  titles;
+        this.images =  images;
+    }
+
+    @Override
+    public FoodList.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_single, null);
+        FoodList.ViewHolder rcv = new FoodList.ViewHolder(layoutView);
+        return rcv;
+    }
+
+    @Override
+    public void onBindViewHolder(FoodList.ViewHolder holder, final int i) {
+
 
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        LayoutInflater inflater = context.getLayoutInflater();
-        View rowView= inflater.inflate(R.layout.list_single, null, true);
-        TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
+    public int getItemCount() {
+      //  return images.size();
+        return 20;
+    }
 
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
-        txtTitle.setText(title.get(position));
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 8;
-        final Bitmap bitmap = BitmapFactory.decodeFile(Uri.parse(imageUri.get(position)).getPath(),
-                options);
+        ImageView ivService;
+        TextView tvService;
+        ImageView ivRightback;
 
-        imageView.setImageBitmap(bitmap);
-        return rowView;
+        public ViewHolder(View itemView) {
+            super(itemView);
+
+        }
     }
 }

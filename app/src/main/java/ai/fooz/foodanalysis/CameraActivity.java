@@ -70,8 +70,6 @@ public class CameraActivity extends AppCompatActivity {
 
     private ImageView imgPreview;
     private VideoView videoPreview;
-    private Button btnCapturePicture;
-//    private TextView nutriStats;
 
     private static final int INPUT_SIZE = 224;
     private static final int IMAGE_MEAN = 128;
@@ -104,9 +102,7 @@ public class CameraActivity extends AppCompatActivity {
         setContentView(R.layout.activity_camera);
 
         imgPreview = (ImageView) findViewById(R.id.imgPreview);
-        btnCapturePicture = (Button) findViewById(R.id.btnCapturePicture);
-//        nutriStats = (TextView)findViewById(R.id.nutriStats);
-        pieChart = (PieChart) findViewById(R.id.piechart);
+
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -135,7 +131,7 @@ public class CameraActivity extends AppCompatActivity {
             imgPreview.setImageBitmap(bitmap);
 
             setupRecyclerViewForPredictions(eimg.getPredictions());
-            setPieChart();
+           // setPieChart();
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -248,7 +244,7 @@ public class CameraActivity extends AppCompatActivity {
             }
             br.close();
 
-            setPieChart();
+          //  setPieChart();
             setupRecyclerViewForPredictions(results);
         } catch (IOException e) {
             throw new RuntimeException("Problem reading label file!" , e);
@@ -380,7 +376,7 @@ public class CameraActivity extends AppCompatActivity {
         // Adding items to RecyclerView.
         AddItemsToRecyclerViewArrayList(results);
 
-        RecyclerViewHorizontalAdapter = new RecyclerViewAdapter(Number);
+        RecyclerViewHorizontalAdapter = new RecyclerViewAdapter(Number,CameraActivity.this,recyclerView);
 
         HorizontalLayout = new LinearLayoutManager(CameraActivity.this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(HorizontalLayout);
