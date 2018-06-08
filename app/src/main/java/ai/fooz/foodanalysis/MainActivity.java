@@ -183,20 +183,24 @@ public class MainActivity extends Activity {
             RefImage img = refImagesList.get(i);
             refImgIds.add(img.getId());
             List<Prediction> preds = img.getPredictions();
-            Prediction pd = preds.get(0);
-            FoodItem fi = new FoodItem();
-            fi.setId(img.getId());
-            fi.setName(MyUtility.toTitleCase(pd.title));
-            fi.setImage(img.name);
-            fi.setCalories(String.valueOf(pd.calories));
-            fi.setCarbs(String.valueOf(pd.carbs) + " gms");
-            fi.setFats(String.valueOf(pd.fats) + " gms");
-            fi.setProteins(String.valueOf(pd.proteins) + " gms");
-            tCals += pd.calories;
-            tCarbs += pd.carbs;
-            tFats += pd.fats;
-            tProts += pd.proteins;
-            foodList.add(fi);
+            for(int k=0;k< preds.size();k++){
+                Prediction pd = preds.get(k);
+                if(pd.isSelected){
+                    FoodItem fi = new FoodItem();
+                    fi.setId(img.getId());
+                    fi.setName(MyUtility.toTitleCase(pd.title));
+                    fi.setImage(img.name);
+                    fi.setCalories(String.valueOf(pd.calories));
+                    fi.setCarbs(String.valueOf(pd.carbs) + " gms");
+                    fi.setFats(String.valueOf(pd.fats) + " gms");
+                    fi.setProteins(String.valueOf(pd.proteins) + " gms");
+                    tCals += pd.calories;
+                    tCarbs += pd.carbs;
+                    tFats += pd.fats;
+                    tProts += pd.proteins;
+                    foodList.add(fi);
+                }
+            }
         }
 
         mAdapter.notifyDataSetChanged();

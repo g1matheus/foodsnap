@@ -22,4 +22,22 @@ public class RefImage extends SugarRecord {
     public List<Prediction> getPredictions(){
         return Prediction.find(Prediction.class, "refimage = ?", getId().toString());
     }
+
+    public int getSelectedPredPosition(){
+        int spos = 0;
+        List<Prediction> ls = getPredictions();
+        for(int i=0;i<ls.size();i++){
+            Prediction pd = ls.get(i);
+            if(pd.isSelected){
+                spos = i;
+                break;
+            }
+        }
+        return spos;
+    }
+//
+//    public void setPredictions(List<Prediction> predictions) {
+//
+//        return Prediction.find(Prediction.class, "refimage = ?", getId().toString());
+//    }
 }

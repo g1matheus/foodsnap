@@ -11,6 +11,7 @@ public class Prediction extends SugarRecord {
     public Integer carbs;
     public Integer fats;
     public Integer proteins;
+    public Boolean isSelected;
     public RefImage refimage;
 
     public Prediction() {

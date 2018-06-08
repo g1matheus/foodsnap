@@ -18,6 +18,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private List<String> list;
     CameraActivity cameraActivity;
     RecyclerView recyclerView;
+    int selectedPosition;
 
     public class MyView extends RecyclerView.ViewHolder {
 
@@ -34,10 +35,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
 
-    public RecyclerViewAdapter(List<String> horizontalList, CameraActivity cameraActivity, RecyclerView recyclerView) {
+    public RecyclerViewAdapter(List<String> horizontalList, CameraActivity cameraActivity, RecyclerView recyclerView, int sPos) {
         this.list = horizontalList;
         this.cameraActivity = cameraActivity;
         this.recyclerView = recyclerView;
+        this.selectedPosition = sPos;
     }
 
     @Override
@@ -53,7 +55,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.textView.setText(list.get(position));
 
-        if (position==0){
+        if (position==selectedPosition){
             holder.cardview.setBackgroundDrawable(cameraActivity.getResources().getDrawable(R.drawable.button_bg_blue));
             holder.textView.setTextColor(cameraActivity.getResources().getColor(R.color.white));
         }

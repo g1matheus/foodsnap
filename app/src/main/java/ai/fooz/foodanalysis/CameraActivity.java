@@ -139,7 +139,7 @@ public class CameraActivity extends AppCompatActivity {
                     options);
             imgPreview.setImageBitmap(bitmap);
             setupItemValues(eimg.getPredictions());
-            setupRecyclerViewForPredictions(eimg.getPredictions());
+            setupRecyclerViewForPredictions(eimg.getPredictions(), eimg.getSelectedPredPosition());
            // setPieChart();
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -255,7 +255,7 @@ public class CameraActivity extends AppCompatActivity {
 
           //  setPieChart();
             setupItemValues(results);
-            setupRecyclerViewForPredictions(results);
+            setupRecyclerViewForPredictions(results, 0);
         } catch (IOException e) {
             throw new RuntimeException("Problem reading label file!" , e);
         } catch (JSONException e) {
@@ -362,7 +362,7 @@ public class CameraActivity extends AppCompatActivity {
 
 //    ======================================================
 
-    public void setupRecyclerViewForPredictions(List results) {
+    public void setupRecyclerViewForPredictions(List results, int sPos) {
         recyclerView = (RecyclerView)findViewById(R.id.recyclerview1);
 
         RecyclerViewLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -372,7 +372,7 @@ public class CameraActivity extends AppCompatActivity {
         // Adding items to RecyclerView.
         AddItemsToRecyclerViewArrayList(results);
 
-        RecyclerViewHorizontalAdapter = new RecyclerViewAdapter(Number,CameraActivity.this,recyclerView);
+        RecyclerViewHorizontalAdapter = new RecyclerViewAdapter(Number,CameraActivity.this,recyclerView, sPos);
 
         HorizontalLayout = new LinearLayoutManager(CameraActivity.this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(HorizontalLayout);
@@ -401,8 +401,9 @@ public class CameraActivity extends AppCompatActivity {
                     //Getting clicked value.
                     RecyclerViewItemPosition = Recyclerview.getChildAdapterPosition(ChildView);
 
+                    saveSelectedPrediction(RecyclerViewItemPosition);
                     // Showing clicked item value on screen using toast message.
-                    Toast.makeText(CameraActivity.this, Number.get(RecyclerViewItemPosition), Toast.LENGTH_LONG).show();
+                    Toast.makeText(CameraActivity.this, Number.get(RecyclerViewItemPosition) + " saved.", Toast.LENGTH_LONG).show();
 
                 }
 
@@ -453,6 +454,10 @@ public class CameraActivity extends AppCompatActivity {
                 pred.carbs = Integer.parseInt(itemCarbs.getText().toString().replaceAll("[^0-9]", ""));
                 pred.fats = Integer.parseInt(itemFats.getText().toString().replaceAll("[^0-9]", ""));
                 pred.proteins = Integer.parseInt(itemProts.getText().toString().replaceAll("[^0-9]", ""));
+                if(i==0)
+                    pred.isSelected = true;
+                else
+                    pred.isSelected = false;
                 pred.refimage = refImage;
                 pred.save();
 
@@ -461,6 +466,56 @@ public class CameraActivity extends AppCompatActivity {
 
             existingImg = refImage;
         }
+    }
+
+    public void saveSelectedPrediction(int position) {
+
+        List<Prediction> preds = existingImg.getPredictions();
+
+        for (int i=0; i<preds.size(); i++) {
+
+            Prediction pred = preds.get(i);
+            if(position == i){
+                pred.isSelected = true;
+            } else {
+                pred.isSelected = false;
+            }
+            pred.refimage = existingImg;
+            pred.save();
+        }
+
+        Long eId = getIntent().getLongExtra("REF_DATA_ID", -99);
+        existingImg = RefImage.findById(RefImage.class, eId);
+        setupItemValues(existingImg.getPredictions());
+
+        /*String imgPath = existingImg.name;
+        existingImg.delete();
+        existingImg = null;
+
+        RefImage refImage = new RefImage();
+        refImage.name = imgPath;
+        String sd = getIntent().getStringExtra("selectedDate");
+        if(sd != null)
+            refImage.timestamp = sd;
+        else
+            refImage.timestamp = MyUtility.getDateWithFormat(Calendar.getInstance().getTime(), "yyyy-MM-dd");
+        refImage.save();
+
+        Classifier.Recognition val = predResults.get(position);
+
+        setupItemValues(null);
+
+        Prediction pred = new Prediction();
+        pred.title = val.getTitle();
+        pred.confidence = val.getConfidence().toString();
+        pred.calories = Integer.parseInt(itemCals.getText().toString().replaceAll("[^0-9]", ""));
+        pred.carbs = Integer.parseInt(itemCarbs.getText().toString().replaceAll("[^0-9]", ""));
+        pred.fats = Integer.parseInt(itemFats.getText().toString().replaceAll("[^0-9]", ""));
+        pred.proteins = Integer.parseInt(itemProts.getText().toString().replaceAll("[^0-9]", ""));
+        pred.refimage = refImage;
+        pred.save();
+
+        existingImg = refImage;*/
     }
 
     public void editPressed(View view) {
@@ -518,12 +573,15 @@ public class CameraActivity extends AppCompatActivity {
     public void setupItemValues(List<Prediction> results) {
 
         if (existingImg != null) {
-            for (int i=0; i<1; i++) {
+            for (int i=0; i<results.size(); i++) {
+
                 Prediction val = results.get(i);
-                itemCals.setText(String.valueOf(val.calories));
-                itemCarbs.setText(String.valueOf(val.carbs)+" gms");
-                itemFats.setText(String.valueOf(val.fats)+" gms");
-                itemProts.setText(String.valueOf(val.proteins)+" gms");
+                if(val.isSelected) {
+                    itemCals.setText(String.valueOf(val.calories));
+                    itemCarbs.setText(String.valueOf(val.carbs)+" gms");
+                    itemFats.setText(String.valueOf(val.fats)+" gms");
+                    itemProts.setText(String.valueOf(val.proteins)+" gms");
+                }
             }
         } else {
             itemCals.setText(String.valueOf(MyUtility.getRandomNumber(50, 300)));
