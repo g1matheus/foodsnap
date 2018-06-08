@@ -183,9 +183,10 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginEnd="5dp"
                         android:textColor="@color/white"
-                        android:text="45gm"
+                        android:text="00"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:id="@+id/totalCal"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -218,9 +219,10 @@
 
                 <ai.fooz.foodanalysis.customfont.TextView_SemiBold
                     android:textColor="@color/white"
-                    android:text="45gms"
+                    android:text="0 gms"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:id="@+id/totalCarbs"/>
 
             </LinearLayout>
 
@@ -253,9 +255,10 @@
 
                 <ai.fooz.foodanalysis.customfont.TextView_SemiBold
                     android:textColor="@color/white"
-                    android:text="45gms"
+                    android:text="0 gms"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:id="@+id/totalFats"/>
 
             </LinearLayout>
 
@@ -287,9 +290,10 @@
 
                 <ai.fooz.foodanalysis.customfont.TextView_SemiBold
                     android:textColor="@color/white"
-                    android:text="45gms"
+                    android:text="0 gms"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:id="@+id/totalProts"/>
 
             </LinearLayout>
 

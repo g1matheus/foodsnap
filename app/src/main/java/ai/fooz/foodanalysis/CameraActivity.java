@@ -23,6 +23,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -72,6 +73,7 @@ public class CameraActivity extends AppCompatActivity {
 
     private ImageView imgPreview;
     private VideoView videoPreview;
+    private TextView itemCals, itemCarbs, itemFats, itemProts;
 
     private static final int INPUT_SIZE = 224;
     private static final int IMAGE_MEAN = 128;
@@ -104,6 +106,10 @@ public class CameraActivity extends AppCompatActivity {
         setContentView(R.layout.activity_camera);
 
         imgPreview = (ImageView) findViewById(R.id.imgPreview);
+        itemCals = (TextView) findViewById(R.id.itemCal);
+        itemCarbs = (TextView) findViewById(R.id.itemCarbs);
+        itemFats = (TextView) findViewById(R.id.itemFats);
+        itemProts = (TextView) findViewById(R.id.itemProts);
 
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -130,7 +136,7 @@ public class CameraActivity extends AppCompatActivity {
             final Bitmap bitmap = BitmapFactory.decodeFile(Uri.parse(existingImg.name).getPath(),
                     options);
             imgPreview.setImageBitmap(bitmap);
-
+            setupItemValues(eimg.getPredictions());
             setupRecyclerViewForPredictions(eimg.getPredictions());
            // setPieChart();
         } catch (NullPointerException e) {
@@ -246,6 +252,7 @@ public class CameraActivity extends AppCompatActivity {
             br.close();
 
           //  setPieChart();
+            setupItemValues(results);
             setupRecyclerViewForPredictions(results);
         } catch (IOException e) {
             throw new RuntimeException("Problem reading label file!" , e);
@@ -410,6 +417,7 @@ public class CameraActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     // function to add items in RecyclerView.
@@ -439,6 +447,10 @@ public class CameraActivity extends AppCompatActivity {
                 Prediction pred = new Prediction();
                 pred.title = val.getTitle();
                 pred.confidence = val.getConfidence().toString();
+                pred.calories = Integer.parseInt(itemCals.getText().toString().replaceAll("[^0-9]", ""));
+                pred.carbs = Integer.parseInt(itemCarbs.getText().toString().replaceAll("[^0-9]", ""));
+                pred.fats = Integer.parseInt(itemFats.getText().toString().replaceAll("[^0-9]", ""));
+                pred.proteins = Integer.parseInt(itemProts.getText().toString().replaceAll("[^0-9]", ""));
                 pred.refimage = refImage;
                 pred.save();
 
@@ -449,5 +461,23 @@ public class CameraActivity extends AppCompatActivity {
 
     public void backPressed(View view) {
         finish();
+    }
+
+    public void setupItemValues(List<Prediction> results) {
+
+        if (existingImg != null) {
+            for (int i=0; i<1; i++) {
+                Prediction val = results.get(i);
+                itemCals.setText(String.valueOf(val.calories));
+                itemCarbs.setText(String.valueOf(val.carbs)+" gms");
+                itemFats.setText(String.valueOf(val.fats)+" gms");
+                itemProts.setText(String.valueOf(val.proteins)+" gms");
+            }
+        } else {
+            itemCals.setText(String.valueOf(MyUtility.getRandomNumber(50, 300)));
+            itemCarbs.setText(String.valueOf(MyUtility.getRandomNumber(30, 300))+" gms");
+            itemFats.setText(String.valueOf(MyUtility.getRandomNumber(5, 60))+" gms");
+            itemProts.setText(String.valueOf(MyUtility.getRandomNumber(5, 30))+" gms");
+        }
     }
 }

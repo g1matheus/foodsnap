@@ -118,8 +118,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="405 gm"
-            android:textColor="@color/black" />
+            android:text="00"
+            android:textColor="@color/black"
+            android:id="@+id/itemCal"/>
     </LinearLayout>
 
         <View
@@ -155,8 +156,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="55 gms"
-                android:textColor="@color/black" />
+                android:text="0 gms"
+                android:textColor="@color/black"
+                android:id="@+id/itemCarbs"/>
         </LinearLayout>
 
         <View
@@ -190,8 +192,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="120 gms"
-                android:textColor="@color/black" />
+                android:text="0 gms"
+                android:textColor="@color/black"
+                android:id="@+id/itemFats"/>
         </LinearLayout>
 
         <View
@@ -226,8 +229,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="52 gms"
-                android:textColor="@color/black" />
+                android:text="0 gms"
+                android:textColor="@color/black"
+                android:id="@+id/itemProts"/>
         </LinearLayout>
 
         <View

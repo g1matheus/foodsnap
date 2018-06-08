@@ -65,9 +65,10 @@
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:textColor="#9f9f9f"
-            android:text="45gms"
+            android:text="xxx"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:id="@+id/cals"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -99,9 +100,10 @@
 
         <ai.fooz.foodanalysis.customfont.TextView_Regular
             android:textColor="#9f9f9f"
-            android:text="45gms"
+            android:text="xxx"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:id="@+id/carbs"/>
 
     </LinearLayout>
 
@@ -133,9 +135,10 @@
 
         <ai.fooz.foodanalysis.customfont.TextView_Regular
             android:textColor="#9f9f9f"
-            android:text="45gms"
+            android:text="xxx"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:id="@+id/fats"/>
 
     </LinearLayout>
 
@@ -166,9 +169,10 @@
 
         <ai.fooz.foodanalysis.customfont.TextView_Regular
             android:textColor="#9f9f9f"
-            android:text="45gms"
+            android:text="xxx"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:id="@+id/prots"/>
 
     </LinearLayout>
 

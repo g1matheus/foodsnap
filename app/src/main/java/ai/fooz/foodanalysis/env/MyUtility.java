@@ -2,6 +2,7 @@ package ai.fooz.foodanalysis.env;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 public class MyUtility {
 
@@ -37,5 +38,11 @@ public class MyUtility {
         }
 
         return builder.toString();
+    }
+
+    public static int getRandomNumber(int min, int max) {
+        Random r = new Random();
+        final int random = r.nextInt((max - min) + 1) + min;
+        return random;
     }
 }

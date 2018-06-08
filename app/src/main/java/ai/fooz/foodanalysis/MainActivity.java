@@ -51,8 +51,10 @@ import ai.fooz.models.RefImage;
 
 public class MainActivity extends Activity {
 
+    public static final int MULTIPLE_PERMISSIONS = 10;
     TextView activity_main_text_day_of_month;
     TextView activity_main_text_day_of_week;
+    TextView totalCals, totalCarbs, totalFats, totalProts;
 
     private List<FoodItem> foodList = new ArrayList<FoodItem>();
     private RecyclerView recyclerView;
@@ -68,16 +70,38 @@ public class MainActivity extends Activity {
     private  int mMonth;
     private  int mDay;
     private String selectedDate;
+    boolean permissionGranted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        permissionGranted = checkAndRequestPermissions();
 
-        requestRuntimePermission();
+//        requestRuntimePermission();
+        if(permissionGranted) {
+            // carry on the normal flow, as the case of  permissions  granted.
+            initSetup();
+        } else {
+            Toast.makeText(getApplicationContext(), "Permission required to run this app properly.", Toast.LENGTH_SHORT).show();
+        }
+    }
 
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        if (permissionGranted)
+            setupListView();
+    }
+
+    public void initSetup() {
         activity_main_text_day_of_month = (TextView)findViewById(R.id.activity_main_text_day_of_month);
         activity_main_text_day_of_week = (TextView)findViewById(R.id.activity_main_text_day_of_week);
+        totalCals = (TextView)findViewById(R.id.totalCal);
+        totalCarbs = (TextView)findViewById(R.id.totalCarbs);
+        totalFats = (TextView)findViewById(R.id.totalFats);
+        totalProts = (TextView)findViewById(R.id.totalProts);
 
 
         ImageView fab = (ImageView) findViewById(R.id.fab);
@@ -90,13 +114,6 @@ public class MainActivity extends Activity {
 
         setupCalendar();
         setupRecyclerView();
-    }
-
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        setupListView();
     }
 
     public void setupCalendar() {
@@ -130,7 +147,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view, int position) {
                 FoodItem fi = foodList.get(position);
-                Toast.makeText(getApplicationContext(), fi.getName() + " is selected!", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), fi.getName() + " is selected!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getBaseContext(), CameraActivity.class);
                 intent.putExtra("REF_DATA_ID", fi.getId());
                 startActivity(intent);
@@ -158,6 +175,8 @@ public class MainActivity extends Activity {
                 .orderBy("id DESC")
                 .list();
 
+        int tCals=0, tCarbs=0, tFats=0, tProts=0;
+
         for (int i=0; i<refImagesList.size(); i++) {
             RefImage img = refImagesList.get(i);
             refImgIds.add(img.getId());
@@ -167,10 +186,23 @@ public class MainActivity extends Activity {
             fi.setId(img.getId());
             fi.setName(MyUtility.toTitleCase(pd.title));
             fi.setImage(img.name);
+            fi.setCalories(String.valueOf(pd.calories));
+            fi.setCarbs(String.valueOf(pd.carbs) + " gms");
+            fi.setFats(String.valueOf(pd.fats) + " gms");
+            fi.setProteins(String.valueOf(pd.proteins) + " gms");
+            tCals += pd.calories;
+            tCarbs += pd.carbs;
+            tFats += pd.fats;
+            tProts += pd.proteins;
             foodList.add(fi);
         }
 
         mAdapter.notifyDataSetChanged();
+
+        totalCals.setText(String.valueOf(tCals)+" gms");
+        totalCarbs.setText(String.valueOf(tCarbs)+" gms");
+        totalFats.setText(String.valueOf(tFats)+" gms");
+        totalProts.setText(String.valueOf(tProts)+" gms");
     }
 
     public void callCameraActivity() {
@@ -271,7 +303,8 @@ public class MainActivity extends Activity {
                 SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
                 try {
-                 Date   date = format.parse(dtStart);
+                    Date date = format.parse(dtStart);
+//                    selectedDate = MyUtility.getDateWithFormat(date.getTime(), "yyyy-MM-dd");
                     format= new SimpleDateFormat("dd MMM yyyy EEEE");
                     String udatedate = format.format(date);
                     System.out.println("Date ->" + date);
@@ -335,6 +368,50 @@ public class MainActivity extends Activity {
                     != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this,
                         new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
+        }
+    }
+
+    private  boolean checkAndRequestPermissions() {
+        int permissionWriteExSto = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        int cameraPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+
+        List<String> listPermissionsNeeded = new ArrayList<>();
+
+        if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CAMERA);
+        }
+
+        if (permissionWriteExSto != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MULTIPLE_PERMISSIONS);
+            return false;
+        }
+        permissionGranted = true;
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MULTIPLE_PERMISSIONS:{
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    // permissions granted.
+                    permissionGranted = true;
+                    initSetup();
+                } else {
+                    String perStr = "";
+                    for (String per : permissions) {
+                        perStr += "\n" + per;
+                    }
+                    // permissions list of don't granted permission
+                }
+                return;
             }
         }
     }

@@ -29,11 +29,19 @@ public class FoodList extends RecyclerView.Adapter<FoodList.MyViewHolder> {
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
         public ImageView image;
+        public TextView cals;
+        public TextView carbs;
+        public TextView fats;
+        public TextView prots;
 
         public MyViewHolder(View view) {
             super(view);
             name = (TextView) view.findViewById(R.id.txt);
             image = (ImageView) view.findViewById(R.id.img);
+            cals = (TextView) view.findViewById(R.id.cals);
+            carbs = (TextView) view.findViewById(R.id.carbs);
+            fats = (TextView) view.findViewById(R.id.fats);
+            prots = (TextView) view.findViewById(R.id.prots);
         }
     }
 
@@ -49,6 +57,10 @@ public class FoodList extends RecyclerView.Adapter<FoodList.MyViewHolder> {
     public void onBindViewHolder(MyViewHolder holder, int position) {
         FoodItem foodItem = foodList.get(position);
         holder.name.setText(foodItem.getName());
+        holder.cals.setText(foodItem.getCalories());
+        holder.carbs.setText(foodItem.getCarbs());
+        holder.fats.setText(foodItem.getFats());
+        holder.prots.setText(foodItem.getProteins());
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         final Bitmap bitmap = BitmapFactory.decodeFile(Uri.parse(foodItem.getImage()).getPath(),
