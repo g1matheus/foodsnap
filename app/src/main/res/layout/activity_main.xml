@@ -32,7 +32,8 @@
         android:background="@drawable/ic_help_round_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="helpClicked"/>
+        android:onClick="helpClicked"
+        android:id="@+id/helpBtn"/>
 
 
 </RelativeLayout>

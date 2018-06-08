@@ -1,6 +1,7 @@
 package ai.fooz.foodanalysis;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -14,6 +15,7 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -456,11 +458,61 @@ public class CameraActivity extends AppCompatActivity {
 
                 Number.add(val.getTitle());
             }
+
+            existingImg = refImage;
         }
+    }
+
+    public void editPressed(View view) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
+        builder.setTitle("Edit Food Item");
+//        builder.setMessage("This is an Example of Android AlertDialog with 3 Buttons!!");
+
+        //Button One : Yes
+        builder.setPositiveButton("Retake", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteCurrentImage();
+                captureImage();
+                dialog.cancel();
+            }
+        });
+
+
+        //Button Two : No
+        builder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteCurrentImage();
+                dialog.cancel();
+                finish();
+            }
+        });
+
+
+        //Button Three : Neutral
+        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+
+        AlertDialog diag = builder.create();
+        diag.show();
     }
 
     public void backPressed(View view) {
         finish();
+    }
+
+    public void deleteCurrentImage() {
+        if (existingImg != null) {
+            existingImg.delete();
+            existingImg = null;
+        }
     }
 
     public void setupItemValues(List<Prediction> results) {

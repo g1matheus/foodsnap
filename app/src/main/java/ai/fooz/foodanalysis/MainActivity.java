@@ -55,6 +55,7 @@ public class MainActivity extends Activity {
     TextView activity_main_text_day_of_month;
     TextView activity_main_text_day_of_week;
     TextView totalCals, totalCarbs, totalFats, totalProts;
+    ImageView helpBtn;
 
     private List<FoodItem> foodList = new ArrayList<FoodItem>();
     private RecyclerView recyclerView;
@@ -102,6 +103,7 @@ public class MainActivity extends Activity {
         totalCarbs = (TextView)findViewById(R.id.totalCarbs);
         totalFats = (TextView)findViewById(R.id.totalFats);
         totalProts = (TextView)findViewById(R.id.totalProts);
+        helpBtn = (ImageView)findViewById(R.id.helpBtn);
 
 
         ImageView fab = (ImageView) findViewById(R.id.fab);
@@ -404,6 +406,7 @@ public class MainActivity extends Activity {
                     // permissions granted.
                     permissionGranted = true;
                     initSetup();
+                    helpBtn.performClick();
                 } else {
                     String perStr = "";
                     for (String per : permissions) {

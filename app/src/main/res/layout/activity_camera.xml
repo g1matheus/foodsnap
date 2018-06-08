@@ -18,13 +18,13 @@
         <ImageView
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
-            android:background="@drawable/ic_close"
+            android:background="@drawable/ic_left"
             android:id="@+id/imgClose"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:onClick="backPressed"/>
 
         <ai.fooz.foodanalysis.customfont.TextView_SemiBold
-            android:onClick="backPressed"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:textSize="22sp"
@@ -36,14 +36,14 @@
             android:textColor="@color/white" />
 
         <ai.fooz.foodanalysis.customfont.ButtonBold
-            android:onClick="backPressed"
+            android:onClick="editPressed"
             android:textSize="14sp"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:layout_width="60dp"
             android:layout_height="30dp"
             android:layout_alignParentEnd="true"
-            android:text="Save"
+            android:text="Edit"
             android:background="@drawable/button_bg_white"
             android:textColor="@color/colorPrimary"
             />

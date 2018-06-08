@@ -63,6 +63,7 @@ public class FoodList extends RecyclerView.Adapter<FoodList.MyViewHolder> {
         holder.prots.setText(foodItem.getProteins());
 
         BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 8;
         final Bitmap bitmap = BitmapFactory.decodeFile(Uri.parse(foodItem.getImage()).getPath(),
                 options);
         holder.image.setImageBitmap(bitmap);
