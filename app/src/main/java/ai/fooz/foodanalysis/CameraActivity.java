@@ -485,8 +485,12 @@ public class CameraActivity extends AppCompatActivity {
         }
 
         Long eId = getIntent().getLongExtra("REF_DATA_ID", -99);
-        existingImg = RefImage.findById(RefImage.class, eId);
-        setupItemValues(existingImg.getPredictions());
+        if (existingImg == null && eId != -99){
+            existingImg = RefImage.findById(RefImage.class, eId);
+        }
+
+        if(existingImg != null)
+            setupItemValues(existingImg.getPredictions());
 
         /*String imgPath = existingImg.name;
         existingImg.delete();
