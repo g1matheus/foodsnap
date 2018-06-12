@@ -21,9 +21,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -227,7 +229,12 @@ public class CameraActivity extends AppCompatActivity {
 
         Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, true);
         predResults = classifier.recognizeImage(croppedBitmap);
-        setNutrients(predResults);
+        if(predResults.get(0).getConfidence() > 0.60){
+            setNutrients(predResults);
+        } else {
+            //Unknown class
+            showUnknownClassPopup();
+        }
     }
 
     public void setNutrients(List results) {
@@ -261,6 +268,37 @@ public class CameraActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void showUnknownClassPopup() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.dialog_unknown_class, null);
+        dialogBuilder.setView(dialogView);
+
+        final EditText edt = (EditText) dialogView.findViewById(R.id.edit_unknown_class);
+
+        dialogBuilder.setTitle("Item not found");
+        dialogBuilder.setMessage("Ooops, unable to find this item. \n\nTrust me, I'm trying hard to make myself better. \n\nI promise to train myself for this item.");
+        dialogBuilder.setPositiveButton("Send", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //do something with edt.getText().toString();
+                Toast.makeText(getApplicationContext(),
+                        "Thanks buddy, I really appreciate this gesture.", Toast.LENGTH_SHORT)
+                        .show();
+                finish();
+            }
+        });
+        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                Toast.makeText(getApplicationContext(),
+                        "Ooops, it hurts!!", Toast.LENGTH_SHORT)
+                        .show();
+                finish();
+            }
+        });
+        AlertDialog b = dialogBuilder.create();
+        b.show();
     }
 
     public void setPieChart(){
@@ -403,7 +441,7 @@ public class CameraActivity extends AppCompatActivity {
 
                     saveSelectedPrediction(RecyclerViewItemPosition);
                     // Showing clicked item value on screen using toast message.
-                    Toast.makeText(CameraActivity.this, Number.get(RecyclerViewItemPosition) + " saved.", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(CameraActivity.this, Number.get(RecyclerViewItemPosition) + " saved.", Toast.LENGTH_LONG).show();
 
                 }
 
@@ -477,6 +515,7 @@ public class CameraActivity extends AppCompatActivity {
             Prediction pred = preds.get(i);
             if(position == i){
                 pred.isSelected = true;
+                Toast.makeText(CameraActivity.this, pred.title +" ("+pred.confidence+")" + " saved.", Toast.LENGTH_LONG).show();
             } else {
                 pred.isSelected = false;
             }
