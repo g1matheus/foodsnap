@@ -1,10 +1,22 @@
 package ai.fooz.foodanalysis.env;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
+import android.view.View;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
+import ai.fooz.foodanalysis.MainActivity;
+
 public class MyUtility {
+
+    private static final String LABEL_FILE = "file:///android_asset/labels.txt";
 
     public static String getDateWithFormat(Date dt, String format) {
         SimpleDateFormat df = new SimpleDateFormat(format);
@@ -44,5 +56,23 @@ public class MyUtility {
         Random r = new Random();
         final int random = r.nextInt((max - min) + 1) + min;
         return random;
+    }
+
+    public static String getLabels(Context myContext) {
+
+        String actualFilename = LABEL_FILE.split("file:///android_asset/")[1];
+        String lbls = "";
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new InputStreamReader(myContext.getAssets().open(actualFilename)));
+            String line;
+            while ((line = br.readLine()) != null) {
+                lbls = lbls+"\n"+ MyUtility.toTitleCase(line);
+            }
+            br.close();
+            return lbls;
+        } catch (IOException e) {
+            throw new RuntimeException("Problem reading label file!" , e);
+        }
     }
 }

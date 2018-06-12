@@ -335,31 +335,17 @@ public class MainActivity extends Activity {
 
     public void helpClicked(View view) {
 
-        String actualFilename = LABEL_FILE.split("file:///android_asset/")[1];
-        String lbls = "";
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(getAssets().open(actualFilename)));
-            String line;
-            while ((line = br.readLine()) != null) {
-                lbls = lbls+"\n"+ MyUtility.toTitleCase(line);
-            }
-            br.close();
-
-            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-            alertDialog.setTitle("I can predict these items");
-            alertDialog.setMessage(lbls);
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            alertDialog.show();
-
-        } catch (IOException e) {
-            throw new RuntimeException("Problem reading label file!" , e);
-        }
+        String lbls = MyUtility.getLabels(getApplicationContext());
+        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+        alertDialog.setTitle("I can predict these items");
+        alertDialog.setMessage(lbls);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 
     private void requestRuntimePermission() {

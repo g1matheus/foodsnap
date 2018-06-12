@@ -229,7 +229,7 @@ public class CameraActivity extends AppCompatActivity {
 
         Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, true);
         predResults = classifier.recognizeImage(croppedBitmap);
-        if(predResults.get(0).getConfidence() > 0.60){
+        if(predResults.get(0).getConfidence() > 0.70){
             setNutrients(predResults);
         } else {
             //Unknown class
@@ -297,6 +297,25 @@ public class CameraActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        dialogBuilder.setNeutralButton("Retake", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+//                String lbls = MyUtility.getLabels(getApplicationContext());
+//                AlertDialog alertDialog = new AlertDialog.Builder(CameraActivity.this).create();
+//                alertDialog.setTitle("I can predict these items");
+//                alertDialog.setMessage(lbls);
+//                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+//                        new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                dialog.dismiss();
+//                            }
+//                        });
+//                alertDialog.show();
+//                finish();
+                captureImage();
+            }
+        });
+
         AlertDialog b = dialogBuilder.create();
         b.show();
     }
