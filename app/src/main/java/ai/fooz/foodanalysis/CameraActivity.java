@@ -229,7 +229,7 @@ public class CameraActivity extends AppCompatActivity {
 
         Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, true);
         predResults = classifier.recognizeImage(croppedBitmap);
-        if(predResults.get(0).getConfidence() > 0.70){
+        if(predResults.get(0).getConfidence() > MyUtility.PREDICTION_THRESHOLD){
             setNutrients(predResults);
         } else {
             //Unknown class
@@ -279,7 +279,7 @@ public class CameraActivity extends AppCompatActivity {
         final EditText edt = (EditText) dialogView.findViewById(R.id.edit_unknown_class);
 
         dialogBuilder.setTitle("Item not found");
-        dialogBuilder.setMessage("Ooops, unable to find this item. \n\nTrust me, I'm trying hard to make myself better. \n\nI promise to train myself for this item.");
+        dialogBuilder.setMessage("Ooops, unable to predict this item. \n\nTrust me, I'm trying hard to make myself better. \n\nI promise to train myself for this item.");
         dialogBuilder.setPositiveButton("Send", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 //do something with edt.getText().toString();
@@ -291,10 +291,9 @@ public class CameraActivity extends AppCompatActivity {
         });
         dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                Toast.makeText(getApplicationContext(),
-                        "Ooops, it hurts!!", Toast.LENGTH_SHORT)
-                        .show();
-                finish();
+//                Toast.makeText(getApplicationContext(),"Ooops, it hurts!!", Toast.LENGTH_SHORT).show();
+                setNutrients(predResults);
+//                finish();
             }
         });
 

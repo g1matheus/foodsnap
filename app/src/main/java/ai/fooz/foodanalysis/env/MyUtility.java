@@ -17,6 +17,7 @@ import ai.fooz.foodanalysis.MainActivity;
 public class MyUtility {
 
     private static final String LABEL_FILE = "file:///android_asset/labels.txt";
+    public static final float PREDICTION_THRESHOLD = (float) 0.60;
 
     public static String getDateWithFormat(Date dt, String format) {
         SimpleDateFormat df = new SimpleDateFormat(format);

@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">FoodAnalysis</string>
+    <string name="app_name">Food Snap</string>
     <string name="title_activity_camera">CameraActivity</string>
 </resources>
