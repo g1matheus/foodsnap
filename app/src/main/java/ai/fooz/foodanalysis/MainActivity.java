@@ -3,6 +3,7 @@ package ai.fooz.foodanalysis;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 
@@ -28,9 +29,11 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -336,16 +339,65 @@ public class MainActivity extends Activity {
     public void helpClicked(View view) {
 
         String lbls = MyUtility.getLabels(getApplicationContext());
-        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-        alertDialog.setTitle("I can predict these items");
-        alertDialog.setMessage(lbls);
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-        alertDialog.show();
+        /*
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.dialog_unknown_class, null);
+        dialogBuilder.setView(dialogView);
+
+        dialogBuilder.setTitle("I am 4 weeks old and can predict below listed items");
+        dialogBuilder.setMessage(lbls);
+        dialogBuilder.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.dismiss();
+            }
+        });
+
+        dialogBuilder.setNeutralButton("Contact Developer", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.dismiss();
+                Intent it = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                it.putExtra(Intent.EXTRA_EMAIL, new String[] {"dilip.ajm@gmail.com"});
+                it.putExtra(Intent.EXTRA_SUBJECT, "Query");
+                it.setType("message/rfc822");
+                startActivity(it);
+            }
+        });
+
+        AlertDialog b = dialogBuilder.create();
+        b.show();*/
+
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+
+        dialogBuilder.setTitle("I am few weeks old and can predict below listed items");
+        dialogBuilder.setMessage(lbls);
+
+        dialogBuilder.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.dismiss();
+            }
+        });
+
+        dialogBuilder.setNeutralButton("Contact Developer", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                String mailto = "mailto:dilip.ajm@gmail.com";
+
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+                emailIntent.setData(Uri.parse(mailto));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Query");
+
+                try {
+                    startActivity(emailIntent);
+                } catch (ActivityNotFoundException e) {
+                    //TODO: Handle case where no email app is available
+                }
+            }
+        });
+
+        AlertDialog b = dialogBuilder.create();
+        b.show();
     }
 
     private void requestRuntimePermission() {

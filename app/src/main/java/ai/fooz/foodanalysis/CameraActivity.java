@@ -1,6 +1,7 @@
 package ai.fooz.foodanalysis;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
@@ -282,11 +283,32 @@ public class CameraActivity extends AppCompatActivity {
         dialogBuilder.setMessage("Ooops, unable to predict this item. \n\nTrust me, I'm trying hard to make myself better. \n\nI promise to train myself for this item.");
         dialogBuilder.setPositiveButton("Send", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                //do something with edt.getText().toString();
-                Toast.makeText(getApplicationContext(),
-                        "Thanks buddy, I really appreciate this gesture.", Toast.LENGTH_SHORT)
-                        .show();
-                finish();
+
+                String editV = edt.getText().toString();
+                if(editV.length() > 0){
+                    String mailto = "mailto:dilip.ajm@gmail.com";
+
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+                    emailIntent.setData(Uri.parse(mailto));
+                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Add "+editV);
+
+                    try {
+                        startActivity(emailIntent);
+                    } catch (ActivityNotFoundException e) {
+                        //TODO: Handle case where no email app is available
+                    }
+
+                    Toast.makeText(getApplicationContext(),
+                            "Thanks buddy, I really appreciate this gesture.", Toast.LENGTH_SHORT)
+                            .show();
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "I guess, you forgot to add item name.", Toast.LENGTH_SHORT)
+                            .show();
+                    showUnknownClassPopup();
+                }
+
             }
         });
         dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
