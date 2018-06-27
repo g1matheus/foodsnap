@@ -2,8 +2,11 @@ package ai.fooz.foodanalysis.env;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -75,5 +78,14 @@ public class MyUtility {
         } catch (IOException e) {
             throw new RuntimeException("Problem reading label file!" , e);
         }
+    }
+
+    public static Boolean logFirebaseEvent(FirebaseAnalytics mFirebaseAnalytics, String itemName) {
+        Bundle bundle = new Bundle();
+//        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, id);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, itemName);
+//        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+        return true;
     }
 }

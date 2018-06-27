@@ -38,6 +38,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -104,18 +105,20 @@ public class CameraActivity extends AppCompatActivity {
     View ChildView ;
     int RecyclerViewItemPosition ;
     List<Classifier.Recognition> predResults;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
-
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         imgPreview = (ImageView) findViewById(R.id.imgPreview);
         itemCals = (TextView) findViewById(R.id.itemCal);
         itemCarbs = (TextView) findViewById(R.id.itemCarbs);
         itemFats = (TextView) findViewById(R.id.itemFats);
         itemProts = (TextView) findViewById(R.id.itemProts);
 
+        MyUtility.logFirebaseEvent(mFirebaseAnalytics, "CameraActivity:onCreate");
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -167,6 +170,7 @@ public class CameraActivity extends AppCompatActivity {
      * Capturing Camera Image will lauch camera app requrest image capture
      */
     private void captureImage() {
+        MyUtility.logFirebaseEvent(mFirebaseAnalytics, "CameraActivity:captureImage");
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
@@ -272,6 +276,7 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     public void showUnknownClassPopup() {
+        MyUtility.logFirebaseEvent(mFirebaseAnalytics, "CameraActivity:showUnknownClassPopup");
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.dialog_unknown_class, null);
@@ -505,6 +510,7 @@ public class CameraActivity extends AppCompatActivity {
     public void AddItemsToRecyclerViewArrayList(List<Prediction> results){
 
         Number = new ArrayList<>();
+        String logStringResult = "CameraActivity:predictions: ";
 
         if (existingImg != null) {
             for (int i=0; i<results.size(); i++) {
@@ -540,10 +546,13 @@ public class CameraActivity extends AppCompatActivity {
                 pred.save();
 
                 Number.add(val.getTitle());
+                logStringResult = logStringResult + " : " + val.getTitle() + "["+pred.confidence+"]";
             }
 
             existingImg = refImage;
         }
+
+        MyUtility.logFirebaseEvent(mFirebaseAnalytics, logStringResult);
     }
 
     public void saveSelectedPrediction(int position) {
@@ -602,7 +611,7 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     public void editPressed(View view) {
-
+        MyUtility.logFirebaseEvent(mFirebaseAnalytics, "CameraActivity:editPressed");
         AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
         builder.setTitle("Edit Food Item");
 //        builder.setMessage("This is an Example of Android AlertDialog with 3 Buttons!!");

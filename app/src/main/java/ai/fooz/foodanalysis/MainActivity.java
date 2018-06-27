@@ -39,6 +39,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.orm.query.Condition;
 import com.orm.query.Select;
 
@@ -51,9 +52,11 @@ import ai.fooz.foodanalysis.env.MyUtility;
 import ai.fooz.foodanalysis.env.RecyclerTouchListener;
 import ai.fooz.models.Prediction;
 import ai.fooz.models.RefImage;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class MainActivity extends Activity {
 
+    private FirebaseAnalytics mFirebaseAnalytics;
     public static final int MULTIPLE_PERMISSIONS = 10;
     TextView activity_main_text_day_of_month;
     TextView activity_main_text_day_of_week;
@@ -80,6 +83,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         permissionGranted = checkAndRequestPermissions();
 
 //        requestRuntimePermission();
@@ -89,6 +94,8 @@ public class MainActivity extends Activity {
         } else {
             Toast.makeText(getApplicationContext(), "Permission required to run this app properly.", Toast.LENGTH_SHORT).show();
         }
+
+        MyUtility.logFirebaseEvent(mFirebaseAnalytics, "MainActivity:onCreate");
     }
 
 
@@ -215,6 +222,7 @@ public class MainActivity extends Activity {
     }
 
     public void callCameraActivity() {
+        MyUtility.logFirebaseEvent(mFirebaseAnalytics, "MainActivity:CallCameraActivity");
         Intent i = new Intent(this, CameraActivity.class);
         i.putExtra("selectedDate", selectedDate);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -338,35 +346,8 @@ public class MainActivity extends Activity {
 
     public void helpClicked(View view) {
 
+        MyUtility.logFirebaseEvent(mFirebaseAnalytics, "MainActivity:helpClicked");
         String lbls = MyUtility.getLabels(getApplicationContext());
-        /*
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        final View dialogView = inflater.inflate(R.layout.dialog_unknown_class, null);
-        dialogBuilder.setView(dialogView);
-
-        dialogBuilder.setTitle("I am 4 weeks old and can predict below listed items");
-        dialogBuilder.setMessage(lbls);
-        dialogBuilder.setPositiveButton("Got it", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.dismiss();
-            }
-        });
-
-        dialogBuilder.setNeutralButton("Contact Developer", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.dismiss();
-                Intent it = new Intent(Intent.ACTION_SEND_MULTIPLE);
-                it.putExtra(Intent.EXTRA_EMAIL, new String[] {"dilip.ajm@gmail.com"});
-                it.putExtra(Intent.EXTRA_SUBJECT, "Query");
-                it.setType("message/rfc822");
-                startActivity(it);
-            }
-        });
-
-        AlertDialog b = dialogBuilder.create();
-        b.show();*/
-
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
 
