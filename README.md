@@ -1,10 +1,9 @@
 # Food Snap
 Food classification &amp; calories display
 
-## Demo
+## [Demo (Youtube)](https://www.youtube.com/watch?v=l7xgyHInTqE)
 
-[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/l7xgyHInTqE/0.jpg)](http://www.youtube.com/watch?v=l7xgyHInTqE)
-
+![alt text](https://github.com/dilipajm/foodsnap/blob/master/demo-gif.gif)
 
 You might have seen the app where you type the food item name and the app will show you the micro-nutrients in it like Calories, Carbs, Fats, Proteins etc.
 
